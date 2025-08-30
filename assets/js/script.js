@@ -157,3 +157,38 @@ for (let i = 0; i < navigationLinks.length; i++) {
 
   });
 }
+
+
+
+// Counter animation for stats
+function animateCounters() {
+  const counters = document.querySelectorAll('.stat-number');
+  const speed = 200; // The lower the slower
+  
+  counters.forEach(counter => {
+    const target = +counter.getAttribute('data-count');
+    const count = +counter.innerText;
+    const increment = Math.ceil(target / speed);
+    
+    if (count < target) {
+      counter.innerText = Math.min(count + increment, target);
+      setTimeout(() => animateCounters(), 1);
+    }
+  });
+}
+
+// Initialize counters when stats section is in view
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      animateCounters();
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+
+// Observe stats section
+const statsSection = document.querySelector('.stats');
+if (statsSection) {
+  observer.observe(statsSection);
+}
